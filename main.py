@@ -1,5 +1,4 @@
 import des
-
+import numpy as np
 if __name__ == "__main__":
-    k = des.strToArr(des.getKey())
-    k2 = des.rm_parity_bits(k)
+   
