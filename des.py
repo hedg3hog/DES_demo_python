@@ -163,7 +163,22 @@ class DES:
                         41, 52, 31, 37, 47, 55, 30, 40,\
                         51, 45, 33, 48, 44, 49, 39, 56,\
                         34, 53, 46, 42, 50, 36, 29, 32))
-        y = np.zeros((56))
-        for i in range(56):
+        y = np.zeros((48))
+        for i in range(48):
            y[i] = ki[a[i]-1]
         return y.reshape((7,8))
+
+    def gen_round_keys(self, k):
+        k = self.pc_1(k)
+        c = k[:28]
+        d = k[28:]
+        keys = np.zeros((16, 56))
+        for i in range(16):
+            if i+1 in (1,2,9,16):
+                c = np.roll(c, -1)
+                d = np.roll(d, -1)
+            else:
+                c = np.roll(c, -2)
+                d = np.roll(d, -2)
+            k[i] = self.pc_2(np.concatenate(c,d))
+
