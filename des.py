@@ -166,7 +166,7 @@ class DES:
         y = np.zeros((48))
         for i in range(48):
            y[i] = ki[a[i]-1]
-        return y.reshape((7,8))
+        return y
 
     def gen_round_keys(self, k):
         k = self.pc_1(k)
@@ -180,5 +180,8 @@ class DES:
             else:
                 c = np.roll(c, -2)
                 d = np.roll(d, -2)
-            k[i] = self.pc_2(np.concatenate(c,d))
+            keys[i] = self.pc_2(np.concatenate(c,d))
+        return keys
 
+
+       
