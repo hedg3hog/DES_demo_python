@@ -291,3 +291,17 @@ def to_file(filename:str, data_array:np.array):
             l.append(byte)
     l = np.array(l, dtype=np.uint8)
     l.tofile(filename)
+
+def encrypt(data, key)->np.array:
+    """decryts data array of shape (n, 8, 8,) returns array in the same shape"""
+    e = np.empty(np.shape(data), dtype=np.uint8)
+    for i in range(len(data)):
+       e[i] = enc_block64(data[i], key)
+    return e
+
+def decypt(data, key)->np.array:
+    """decryts data array of shape (n, 8, 8,) returns array in the same shape"""
+    d = np.empty(np.shape(data), dtype=np.uint8)
+    for i in range(len(data)):
+       d[i] = enc_block64(data[i], key)
+    return d
