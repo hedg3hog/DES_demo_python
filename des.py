@@ -1,6 +1,8 @@
 import numpy as np
 import random
 
+from regex import R
+
 def genPseudoRandomKey():
     "Returns a pseudo random 64 bit np.array"
     k = np.array([random.choice((0,1)) for _ in range(64)], dtype="uint8")
@@ -213,5 +215,38 @@ def gen_round_keys(k) -> np.array:
         keys[i] = pc_2(np.concatenate((c,d)))
     return keys
 
+def ascii_to_key(s:str) -> np.array:
+    
+    x = bin(int.from_bytes(s.encode(), "big"))[2:]
+    if len(x) < 64:
+        raise ValueError("String to short")
+    k = [int(x[i]) for i in range(64)]
 
-       
+    return np.array(k, dtype=np.uint8).reshape((8,8))
+
+def string_to_array(s:str) -> np.array:
+    x = np.array([i for i in s])
+    x = x.view(np.uint32)
+    a = []
+    for i in x:
+        for c in np.binary_repr(i):
+            a.append(c)
+    
+    while len(a) % 64 != 0:
+        a.append(0)
+    a = np.array(a, dtype=np.uint8)
+    return a.reshape((int(a.size/64),8,8))
+
+def enc(x:np.array, k:np.array) -> np.array:
+    x = ip(x)
+    keys = gen_round_keys(k)
+    l = x[:4].reshape((32))
+    r = x[4:].reshape((32))
+    for i in range(16):
+        l_new = r
+        r_new = np.bitwise_xor(l, f(r,k[i]))
+        l = l_new
+        r = r_new
+    l_end = r 
+    r_end = l
+    return ip_1(np.concatenate((l_end, r_end)))
