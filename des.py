@@ -237,7 +237,7 @@ def string_to_array(s:str) -> np.array:
     a = np.array(a, dtype=np.uint8)
     return a.reshape((int(a.size/64),8,8))
 
-def enc(x:np.array, k:np.array) -> np.array:
+def enc_block64(x:np.array, k:np.array) -> np.array:
     x = ip(x)
     keys = gen_round_keys(k)
     l = x[:4].reshape((32))
@@ -250,3 +250,28 @@ def enc(x:np.array, k:np.array) -> np.array:
     l_end = r 
     r_end = l
     return ip_1(np.concatenate((l_end, r_end)))
+
+
+def from_file(filename:str) -> np.array:
+    """returns a np.array of 8x8 arrays"""
+    file = np.fromfile(filename, dtype="uint8")
+    print(file)
+    a = []
+    for b in file:
+        for bit in np.binary_repr(b, 8):
+            a.append(bit)
+    while len(a) % 64 != 0:
+        a.append(0)
+    a = np.array(a, dtype=np.uint8)
+    return a.reshape((int(a.size/64),8,8))
+
+def to_file(filename:str, data_array:np.array):
+    """writes data to a file"""
+    l = []
+    for block in data_array:
+        for byte in block:
+            byte = np.array2string(byte, separator="")[1:-1]
+            byte = int(byte, 2)
+            l.append(byte)
+    l = np.array(l, dtype=np.uint8)
+    l.tofile(filename)
