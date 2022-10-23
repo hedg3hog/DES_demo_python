@@ -39,7 +39,7 @@ def ip_1(x) -> np.array:
     return y.reshape((8,8))
 
 def e(x) -> np.array:
-    """returns 6x8 array"""
+    """returns 8x6 array"""
     x = x.reshape((32,))
     a = np.array([[32, 1, 2, 3, 4, 5 ,\
                     4, 5, 6, 7 , 8, 9, \
@@ -51,11 +51,12 @@ def e(x) -> np.array:
     y = np.zeros((48,) , dtype="uint8")
     for i in range(48):
         y[i] = x[a[i]-1]
-    return y.reshape((6,8))
+    return y.reshape((8,6))
+
 
 def xor_48(x,k) -> np.array:
-    """returns 2 dim array (6,8)"""
-    return np.bitwise_xor(x.reshape((48,)),k.reshape((48,))).reshape((6,8))
+    """returns 2 dim array (8,6)"""
+    return np.bitwise_xor(x.reshape((48,)),k.reshape((48,))).reshape((8,6))
 
 def s1(x) -> np.array:
     """returns 1 dim array with size 4"""
@@ -139,13 +140,13 @@ def s8(x) -> np.array:
     return np.unpackbits(a[row][column])[-4:]
 
 def p(x) -> np.array:
-    """returns 4x8 array"""
+    """takes and returns 32 bit array"""
     a = np.array([16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, \
                 10, 2, 8, 24, 14, 32, 27, 3, 9, 19, 13,30, 6, 22, 11, 4, 25], dtype=np.uint8)
-    y = np.zeros((32))
+    y = np.zeros((32), dtype=np.uint8)
     for i in range(32):
         y[i] = x[a[i]-1]
-    return y.reshape((4,8))
+    return y
 
 
 def pc_1(k) -> np.array:
@@ -174,6 +175,23 @@ def pc_2(ki) -> np.array:
     for i in range(48):
         y[i] = ki[a[i]-1]
     return y
+
+
+def f(r, k) -> np.array:
+    """takes 32 bit key array and 8x6 data array, returns 32 bit array"""
+    r = e(r)
+    r = xor_48(r,k)
+    r1 = s1(r[0])
+    r2 = s2(r[1])
+    r3 = s3(r[2])
+    r4 = s4(r[3])
+    r5 = s5(r[4])
+    r6 = s6(r[5])
+    r7 = s7(r[6])
+    r8 = s8(r[7])
+    r = np.concatenate((r1, r2, r3, r4, r5, r6, r7, r8))
+
+    return p(r)
 
 def gen_round_keys(k) -> np.array:
     """takes a 64 bit key, returns 16 46-bit round keys"""
