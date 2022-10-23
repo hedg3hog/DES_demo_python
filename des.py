@@ -41,3 +41,20 @@ class DES:
         for i in range(64):
            y[i] = x[a[i]-1]
         return y.reshape((8,8))
+    
+    def e(x):
+        x = x.reshape((32,))
+        a = np.array([[32, 1, 2, 3, 4, 5 ,\
+                        4, 5, 6, 7 , 8, 9, \
+                        8, 9, 10, 11, 12, 13, \
+                        16, 17, 18, 19, 20, 21, \
+                        20, 21, 22, 23, 24, 25, \
+                        24, 25, 26, 27, 28 ,29, \
+                        28, 29, 30, 31, 32, 1]])
+        y = np.zeros((48,) , dtype="uint8")
+        for i in range(48):
+           y[i] = x[a[i]-1]
+        return y.reshape((6,8))
+    
+    def xor_48(x,k):
+        return np.bitwise_xor(x.reshape((48,)),k.reshape((48,))).reshape((6,8))
