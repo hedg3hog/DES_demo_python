@@ -43,22 +43,25 @@ def ip_1(x) -> np.array:
 def e(x) -> np.array:
     """returns 8x6 array"""
     x = x.reshape((32,))
-    a = np.array([[32, 1, 2, 3, 4, 5 ,\
+    a = np.array((32, 1, 2, 3, 4, 5 ,\
                     4, 5, 6, 7 , 8, 9, \
                     8, 9, 10, 11, 12, 13, \
+                    12, 13, 14, 15, 16, 17,\
                     16, 17, 18, 19, 20, 21, \
                     20, 21, 22, 23, 24, 25, \
                     24, 25, 26, 27, 28 ,29, \
-                    28, 29, 30, 31, 32, 1]])
+                    28, 29, 30, 31, 32, 1))
+    #print(a.size)
     y = np.zeros((48,) , dtype="uint8")
     for i in range(48):
-        y[i] = x[a[i]-1]
+        #print("ai",(a[i]))
+        y[i] = x[(a[i]-1)]
     return y.reshape((8,6))
 
 
 def xor_48(x,k) -> np.array:
     """returns 2 dim array (8,6)"""
-    return np.bitwise_xor(x.reshape((48,)),k.reshape((48,))).reshape((8,6))
+    return np.bitwise_xor(x.reshape((48,1)),k.reshape((48,1))).reshape((8,6))
 
 def s1(x) -> np.array:
     """returns 1 dim array with size 4"""
@@ -198,12 +201,12 @@ def f(r, k) -> np.array:
 def gen_round_keys(k) -> np.array:
     """takes a 64 bit key, returns 16 46-bit round keys"""
     k = np.reshape(k, (64,))
-    print("key before pc-1\n", k)
+    #print("key before pc-1\n", k)
     k = pc_1(k)
-    print("key after pc-1\n", k)
+    #print("key after pc-1\n", k)
     c = k[:28]
     d = k[28:]
-    print(c.size, d.size)
+    #print(c.size, d.size)
     keys = np.zeros((16, 48), dtype=np.uint8)
     for i in range(16):
         if i+1 in (1,2,9,16):
@@ -244,7 +247,7 @@ def enc_block64(x:np.array, k:np.array) -> np.array:
     r = x[4:].reshape((32))
     for i in range(16):
         l_new = r
-        r_new = np.bitwise_xor(l, f(r,k[i]))
+        r_new = np.bitwise_xor(l, f(r,keys[i]))
         l = l_new
         r = r_new
     l_end = r 
@@ -252,10 +255,23 @@ def enc_block64(x:np.array, k:np.array) -> np.array:
     return ip_1(np.concatenate((l_end, r_end)))
 
 
+def dec_block64(x:np.array, k:np.array) -> np.array:
+    x = ip(x)
+    keys = gen_round_keys(k)
+    l = x[:4].reshape((32))
+    r = x[4:].reshape((32))
+    for i in range(15,-1,-1):
+        l_new = r
+        r_new = np.bitwise_xor(l, f(r,keys[i]))
+        l = l_new
+        r = r_new
+    l_end = r 
+    r_end = l
+    return ip_1(np.concatenate((l_end, r_end)))
+
 def from_file(filename:str) -> np.array:
     """returns a np.array of 8x8 arrays"""
     file = np.fromfile(filename, dtype="uint8")
-    print(file)
     a = []
     for b in file:
         for bit in np.binary_repr(b, 8):
