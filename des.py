@@ -4,7 +4,7 @@ import random
 from regex import R
 
 def genPseudoRandomKey():
-    "Returns a pseudo random 64 bit np.array"
+    """Returns a pseudo random 64 bit np.array"""
     k = np.array([random.choice((0,1)) for _ in range(64)], dtype="uint8")
     return k.reshape((8,8))
 
