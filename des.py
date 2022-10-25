@@ -1,3 +1,4 @@
+from hamcrest import none
 import numpy as np
 import random
 
@@ -270,18 +271,20 @@ def dec_block64(x:np.array, k:np.array) -> np.array:
     return ip_1(np.concatenate((l_end, r_end)))
 
 def from_file(filename:str) -> np.array:
-    """returns a np.array of 8x8 arrays"""
+    """returns data, padding:  a np.array of 8x8 arrays and the padding count"""
     file = np.fromfile(filename, dtype="uint8")
     a = []
     for b in file:
         for bit in np.binary_repr(b, 8):
             a.append(bit)
+    padding = 0
     while len(a) % 64 != 0:
         a.append(0)
+        padding += 1
     a = np.array(a, dtype=np.uint8)
-    return a.reshape((int(a.size/64),8,8))
+    return a.reshape((int(a.size/64),8,8)), padding
 
-def to_file(filename:str, data_array:np.array):
+def to_file(filename:str, data_array:np.array, padding=False):
     """writes data to a file"""
     l = []
     for block in data_array:
@@ -289,6 +292,8 @@ def to_file(filename:str, data_array:np.array):
             byte = np.array2string(byte, separator="")[1:-1]
             byte = int(byte, 2)
             l.append(byte)
+    if padding:
+        l = l[:-(padding//8)]
     l = np.array(l, dtype=np.uint8)
     l.tofile(filename)
 
