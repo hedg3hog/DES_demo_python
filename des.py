@@ -241,9 +241,10 @@ def string_to_array(s:str) -> np.array:
     a = np.array(a, dtype=np.uint8)
     return a.reshape((int(a.size/64),8,8))
 
-def enc_block64(x:np.array, k:np.array) -> np.array:
+def enc_block64(x:np.array, k:np.array, keys = None) -> np.array:
     x = ip(x)
-    keys = gen_round_keys(k)
+    if not keys:
+        keys = gen_round_keys(k)
     l = x[:4].reshape((32))
     r = x[4:].reshape((32))
     for i in range(16):
@@ -256,9 +257,10 @@ def enc_block64(x:np.array, k:np.array) -> np.array:
     return ip_1(np.concatenate((l_end, r_end)))
 
 
-def dec_block64(x:np.array, k:np.array) -> np.array:
+def dec_block64(x:np.array, k:np.array, keys = None) -> np.array:
     x = ip(x)
-    keys = gen_round_keys(k)
+    if not keys:
+        keys = gen_round_keys(k)
     l = x[:4].reshape((32))
     r = x[4:].reshape((32))
     for i in range(15,-1,-1):
