@@ -1,8 +1,12 @@
-from hamcrest import none
+import hashlib
 import numpy as np
 import random
 
-from regex import R
+class Key:
+    def __init__(self, arr = np.random.randint(0,2,size=64)):
+        """Returns pseudo random key"""
+        self.arr = arr.reshape(8,8)
+        pass
 
 def genPseudoRandomKey():
     """Returns a pseudo random 64 bit np.array"""
@@ -272,31 +276,24 @@ def dec_block64(x:np.array, k:np.array, keys = None) -> np.array:
     r_end = l
     return ip_1(np.concatenate((l_end, r_end)))
 
-def from_file(filename:str) -> np.array:
+def from_file(filename:str):
     """returns data, padding:  a np.array of 8x8 arrays and the padding count"""
     file = np.fromfile(filename, dtype="uint8")
-    a = []
-    for b in file:
-        for bit in np.binary_repr(b, 8):
-            a.append(bit)
-    padding = 0
-    while len(a) % 64 != 0:
-        a.append(0)
-        padding += 1
-    a = np.array(a, dtype=np.uint8)
+    file = np.unpackbits(file)
+    padding = 64 - (len(file) % 64)
+    a = np.append(file, np.zeros((padding,), dtype=np.uint8),)
     return a.reshape((int(a.size/64),8,8)), padding
 
 def to_file(filename:str, data_array:np.array, padding=False):
     """writes data to a file"""
-    l = []
-    for block in data_array:
-        for byte in block:
-            byte = np.array2string(byte, separator="")[1:-1]
-            byte = int(byte, 2)
-            l.append(byte)
+    # pack bit-array into int array
+    l = np.packbits(data_array)
+
+    # remove padding bits
     if padding:
         l = l[:-(padding//8)]
     l = np.array(l, dtype=np.uint8)
+    #Write To file
     l.tofile(filename)
 
 def encrypt(data, key)->np.array:
