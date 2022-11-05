@@ -278,10 +278,12 @@ def dec_block64(x:np.array, k:np.array, keys = None) -> np.array:
 
 def from_file(filename:str):
     """returns data, padding:  a np.array of 8x8 arrays and the padding count"""
-    file = np.fromfile(filename, dtype="uint8")
-    file = np.unpackbits(file)
-    padding = 64 - (len(file) % 64)
+    file = np.fromfile(filename, dtype="uint8")     # read file
+    file = np.unpackbits(file)      # unpack int array to bit array
+    padding = 64 - (len(file) % 64)     # calculate padding
+    # add padding
     a = np.append(file, np.zeros((padding,), dtype=np.uint8),)
+    # return reshaped array
     return a.reshape((int(a.size/64),8,8)), padding
 
 def to_file(filename:str, data_array:np.array, padding=False):
