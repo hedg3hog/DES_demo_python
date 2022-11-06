@@ -3,10 +3,19 @@ import numpy as np
 import random
 
 class Key:
-    def __init__(self, arr = np.random.randint(0,2,size=64)):
-        """Returns pseudo random key"""
-        self.arr = arr.reshape(8,8)
-        pass
+    """key class, on init key is an pseudo random array"""
+    def __init__(self):
+        self.key = np.random.randint(0,2,size=64).reshape(8,8)
+    def __repr__(self) -> str:
+        self.key.__repr__()
+    def fromfile(self, filename:str):
+        key, padding = from_file(filename)
+        if padding == 0 and key.size == 64:
+            self.key = key
+        else:
+            raise ValueError("Keyfile must hafe size of 8 byte!")        
+
+        
 
 def genPseudoRandomKey():
     """Returns a pseudo random 64 bit np.array"""
