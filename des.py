@@ -178,7 +178,7 @@ def p(x) -> np.array:
     return y
 
 
-def pc_1(k) -> np.array:
+def pc_1(ki) -> np.array:
     """returns key in 1-dim array"""
     a = np.array((  57, 49, 41, 33, 25, 17, 9, 1,\
                     58, 50, 42, 34, 26, 19, 10, 2,\
@@ -188,8 +188,8 @@ def pc_1(k) -> np.array:
                     30, 22, 14, 6, 61, 53, 45, 37,\
                     29, 21, 13, 5, 28, 20, 12, 4), dtype=np.uint8)
     y = np.zeros((56), dtype=np.uint8)
-    for i in range(56):
-        y[i] = k[a[i]-1]
+    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    y = ki[a]    # do the permutation
     return y
 
 def pc_2(ki) -> np.array:
@@ -201,8 +201,8 @@ def pc_2(ki) -> np.array:
                     51, 45, 33, 48, 44, 49, 39, 56,\
                     34, 53, 46, 42, 50, 36, 29, 32), dtype=np.uint8)
     y = np.zeros((48), dtype=np.uint8)
-    for i in range(48):
-        y[i] = ki[a[i]-1]
+    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    y = ki[a]    # do the permutation
     return y
 
 
