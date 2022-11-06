@@ -6,6 +6,7 @@ class Key:
     """key class, on init key is an pseudo random array"""
     def __init__(self):
         self.key = np.random.randint(0,2,size=64).reshape(8,8)
+        self.roundkeys = gen_round_keys(self.key)
     def __repr__(self) -> str:
         return self.key.__repr__()
     def __str__(self) -> str:
@@ -14,12 +15,15 @@ class Key:
         key, padding = from_file(filename)
         if padding == 0 and key.size == 64:
             self.key = key
+            self.roundkeys = gen_round_keys(self.key)
         else:
             raise ValueError("Keyfile must hafe size of 8 byte!")
+        
     def fromstring(self, string:str, encoding="ASCII"):
         h = hashlib.md5(string.encode(encoding)).hexdigest()
         arr = np.unpackbits(np.array([int(h[i], 16) for i in range(32)], dtype=np.uint8))
         self.key = arr[:64].reshape(8,8)
+        self.roundkeys = gen_round_keys(self.key)
 
         
 
@@ -260,15 +264,13 @@ def string_to_array(s:str) -> np.array:
     a = np.array(a, dtype=np.uint8)
     return a.reshape((int(a.size/64),8,8))
 
-def enc_block64(x:np.array, k:np.array, keys = None) -> np.array:
+def enc_block64(x:np.array, key:Key) -> np.array:
     x = ip(x)
-    if not keys:
-        keys = gen_round_keys(k)
     l = x[:4].reshape((32))
     r = x[4:].reshape((32))
     for i in range(16):
         l_new = r
-        r_new = np.bitwise_xor(l, f(r,keys[i]))
+        r_new = np.bitwise_xor(l, f(r,key.roundkeys[i]))
         l = l_new
         r = r_new
     l_end = r 
@@ -276,15 +278,13 @@ def enc_block64(x:np.array, k:np.array, keys = None) -> np.array:
     return ip_1(np.concatenate((l_end, r_end)))
 
 
-def dec_block64(x:np.array, k:np.array, keys = None) -> np.array:
+def dec_block64(x:np.array, key:Key) -> np.array:
     x = ip(x)
-    if not keys:
-        keys = gen_round_keys(k)
     l = x[:4].reshape((32))
     r = x[4:].reshape((32))
     for i in range(15,-1,-1):
         l_new = r
-        r_new = np.bitwise_xor(l, f(r,keys[i]))
+        r_new = np.bitwise_xor(l, f(r,key.roundkeys[i]))
         l = l_new
         r = r_new
     l_end = r 
