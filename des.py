@@ -43,9 +43,8 @@ def ip(x:np.array) -> np.array:
             59, 51, 43, 35, 27, 19, 11, 3, \
             61, 53, 45, 37, 29, 21, 13, 5, \
             63, 55, 47, 39, 31, 23, 15, 7), dtype="uint8")
-    y = np.zeros((64,) , dtype="uint8")
-    for i in range(64):
-        y[i] = x[a[i]-1]
+    a = a - 1
+    y = x[a]
     return y.reshape((8,8))
 
 def ip_1(x) -> np.array:
@@ -59,9 +58,8 @@ def ip_1(x) -> np.array:
                     35, 3, 43, 11, 51, 19, 59, 27,\
                     34, 2, 42, 10, 50, 18, 58, 26,\
                     33, 1, 41,  9, 49, 17, 57, 25])
-    y = np.zeros((64,) , dtype="uint8")
-    for i in range(64):
-        y[i] = x[a[i]-1]
+    a = a - 1
+    y = x[a]
     return y.reshape((8,8))
 
 def e(x) -> np.array:
