@@ -19,6 +19,9 @@ class Key:
         else:
             raise ValueError("Keyfile must hafe size of 8 byte!")
      
+    def tofile(self, filename:str):
+        to_file(filename, self.key)
+
     def fromstring(self, string:str, encoding="ASCII"):
         h = hashlib.md5(string.encode(encoding)).hexdigest()
         arr = np.unpackbits(np.array([int(h[i], 16) for i in range(32)], dtype=np.uint8))
