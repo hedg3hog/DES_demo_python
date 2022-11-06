@@ -1,17 +1,20 @@
 import hashlib
 import numpy as np
-import random
 
 class Key:
     """key class, on init key is an pseudo random array"""
     def __init__(self):
         self.key = np.random.randint(0,2,size=64).reshape(8,8)
         self.roundkeys = gen_round_keys(self.key)
+
     def __repr__(self) -> str:
         return self.key.__repr__()
+
     def __str__(self) -> str:
         return self.key.__str__()
+
     def fromfile(self, filename:str):
+        """reads key from given filename"""
         key, padding = from_file(filename)
         if padding == 0 and key.size == 64:
             self.key = key
@@ -20,9 +23,11 @@ class Key:
             raise ValueError("Keyfile must hafe size of 8 byte!")
      
     def tofile(self, filename:str):
+        """saves key to file"""
         to_file(filename, self.key)
 
     def fromstring(self, string:str, encoding="ASCII"):
+        """generates md5 hash of the given string and cuts it to 64 bit"""
         h = hashlib.md5(string.encode(encoding)).hexdigest()
         arr = np.unpackbits(np.array([int(h[i], 16) for i in range(32)], dtype=np.uint8))
         self.key = arr[:64].reshape(8,8)
@@ -30,7 +35,7 @@ class Key:
 
 
 def ip(x:np.array) -> np.array:
-    """returns 8x8 array"""
+    """returns permuted 8x8  array"""
     x = x.reshape((64,))
     a = np.array((58, 50, 42, 34, 26, 18, 10, 2, \
             60, 52, 44, 36, 28, 20, 12, 4, \
@@ -45,7 +50,7 @@ def ip(x:np.array) -> np.array:
     return y.reshape((8,8))
 
 def ip_1(x) -> np.array:
-    """returns 8x8 array"""
+    """returns permuted 8x8 array"""
     x = x.reshape((64,))
     a = np.array([  40,  8, 48, 16, 56, 24, 64, 32,\
                     39, 7, 47, 15, 55, 23, 63, 31,\
