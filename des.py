@@ -78,9 +78,8 @@ def e(x) -> np.array:
                     28, 29, 30, 31, 32, 1))
     #print(a.size)
     y = np.zeros((48,) , dtype="uint8")
-    for i in range(48):
-        #print("ai",(a[i]))
-        y[i] = x[(a[i]-1)]
+    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    y = x[a]    # do the permutation
     return y.reshape((8,6))
 
 
