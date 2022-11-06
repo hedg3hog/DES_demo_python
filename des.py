@@ -7,13 +7,19 @@ class Key:
     def __init__(self):
         self.key = np.random.randint(0,2,size=64).reshape(8,8)
     def __repr__(self) -> str:
-        self.key.__repr__()
+        return self.key.__repr__()
+    def __str__(self) -> str:
+        return self.key.__str__()
     def fromfile(self, filename:str):
         key, padding = from_file(filename)
         if padding == 0 and key.size == 64:
             self.key = key
         else:
-            raise ValueError("Keyfile must hafe size of 8 byte!")        
+            raise ValueError("Keyfile must hafe size of 8 byte!")
+    def fromstring(self, string:str, encoding="ASCII"):
+        h = hashlib.md5(string.encode(encoding)).hexdigest()
+        arr = np.unpackbits(np.array([int(h[i], 16) for i in range(32)], dtype=np.uint8))
+        self.key = arr[:64].reshape(8,8)
 
         
 
