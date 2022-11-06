@@ -18,19 +18,13 @@ class Key:
             self.roundkeys = gen_round_keys(self.key)
         else:
             raise ValueError("Keyfile must hafe size of 8 byte!")
-        
+     
     def fromstring(self, string:str, encoding="ASCII"):
         h = hashlib.md5(string.encode(encoding)).hexdigest()
         arr = np.unpackbits(np.array([int(h[i], 16) for i in range(32)], dtype=np.uint8))
         self.key = arr[:64].reshape(8,8)
         self.roundkeys = gen_round_keys(self.key)
 
-        
-
-def genPseudoRandomKey():
-    """Returns a pseudo random 64 bit np.array"""
-    k = np.array([random.choice((0,1)) for _ in range(64)], dtype="uint8")
-    return k.reshape((8,8))
 
 def ip(x:np.array) -> np.array:
     """returns 8x8 array"""
@@ -43,8 +37,8 @@ def ip(x:np.array) -> np.array:
             59, 51, 43, 35, 27, 19, 11, 3, \
             61, 53, 45, 37, 29, 21, 13, 5, \
             63, 55, 47, 39, 31, 23, 15, 7), dtype="uint8")
-    a = a - 1
-    y = x[a]
+    a = a - 1  # subtrakt 1 from each element so index starts at 0
+    y = x[a]   # do the permutation 
     return y.reshape((8,8))
 
 def ip_1(x) -> np.array:
@@ -58,8 +52,9 @@ def ip_1(x) -> np.array:
                     35, 3, 43, 11, 51, 19, 59, 27,\
                     34, 2, 42, 10, 50, 18, 58, 26,\
                     33, 1, 41,  9, 49, 17, 57, 25])
-    a = a - 1
-    y = x[a]
+    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    y = x[a]    # do the permutation
+    # reshape and return
     return y.reshape((8,8))
 
 def e(x) -> np.array:
