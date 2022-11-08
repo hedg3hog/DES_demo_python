@@ -20,7 +20,7 @@ class Key:
             self.key = key
             self.roundkeys = gen_round_keys(self.key)
         else:
-            raise ValueError("Keyfile must hafe size of 8 byte!")
+            raise ValueError("Keyfile must have size of 8 byte!")
      
     def tofile(self, filename:str):
         """saves key to file"""
