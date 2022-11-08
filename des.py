@@ -20,7 +20,7 @@ class Key:
             self.key = key
             self.roundkeys = gen_round_keys(self.key)
         else:
-            raise ValueError("Keyfile must hafe size of 8 byte!")
+            raise ValueError("Keyfile must have size of 8 byte!")
      
     def tofile(self, filename:str):
         """saves key to file"""
@@ -45,7 +45,7 @@ def ip(x:np.array) -> np.array:
             59, 51, 43, 35, 27, 19, 11, 3, \
             61, 53, 45, 37, 29, 21, 13, 5, \
             63, 55, 47, 39, 31, 23, 15, 7), dtype="uint8")
-    a = a - 1  # subtrakt 1 from each element so index starts at 0
+    a = a - 1  # subtract 1 from each element so index starts at 0
     y = x[a]   # do the permutation 
     return y.reshape((8,8))
 
@@ -60,7 +60,7 @@ def ip_1(x) -> np.array:
                     35, 3, 43, 11, 51, 19, 59, 27,\
                     34, 2, 42, 10, 50, 18, 58, 26,\
                     33, 1, 41,  9, 49, 17, 57, 25])
-    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    a = a - 1   # subtract 1 from each element so index starts at 0
     y = x[a]    # do the permutation
     # reshape and return
     return y.reshape((8,8))
@@ -78,7 +78,7 @@ def e(x) -> np.array:
                     28, 29, 30, 31, 32, 1))
     #print(a.size)
     y = np.zeros((48,) , dtype="uint8")
-    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    a = a - 1   # subtract 1 from each element so index starts at 0
     y = x[a]    # do the permutation
     return y.reshape((8,6))
 
@@ -188,7 +188,7 @@ def pc_1(ki) -> np.array:
                     30, 22, 14, 6, 61, 53, 45, 37,\
                     29, 21, 13, 5, 28, 20, 12, 4), dtype=np.uint8)
     y = np.zeros((56), dtype=np.uint8)
-    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    a = a - 1   # subtract 1 from each element so index starts at 0
     y = ki[a]    # do the permutation
     return y
 
@@ -293,14 +293,14 @@ def to_file(filename:str, data_array:np.array, padding=False):
     l.tofile(filename)
 
 def encrypt(data, key)->np.array:
-    """decryts data array of shape (n, 8, 8,) returns array in the same shape"""
+    """encrypts data array of shape (n, 8, 8,) returns array in the same shape"""
     e = np.empty(np.shape(data), dtype=np.uint8)
     for i in range(len(data)):
        e[i] = enc_block64(data[i], key)
     return e
 
 def decypt(data, key)->np.array:
-    """decryts data array of shape (n, 8, 8,) returns array in the same shape"""
+    """decrypts data array of shape (n, 8, 8,) returns array in the same shape"""
     d = np.empty(np.shape(data), dtype=np.uint8)
     for i in range(len(data)):
        d[i] = dec_block64(data[i], key)
