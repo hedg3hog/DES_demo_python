@@ -77,7 +77,6 @@ def e(x) -> np.array:
                     24, 25, 26, 27, 28 ,29, \
                     28, 29, 30, 31, 32, 1))
     #print(a.size)
-    y = np.zeros((48,) , dtype="uint8")
     a = a - 1   # subtract 1 from each element so index starts at 0
     y = x[a]    # do the permutation
     return y.reshape((8,6))
@@ -173,8 +172,8 @@ def p(x) -> np.array:
     a = np.array([16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, \
                 10, 2, 8, 24, 14, 32, 27, 3, 9, 19, 13,30, 6, 22, 11, 4, 25], dtype=np.uint8)
     y = np.zeros((32), dtype=np.uint8)
-    for i in range(32):
-        y[i] = x[a[i]-1]
+    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    y = x[a]
     return y
 
 
