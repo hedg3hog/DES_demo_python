@@ -231,11 +231,11 @@ def gen_round_keys(k) -> np.array:
     d = k[28:]
     #print(c.size, d.size)
     keys = np.zeros((16, 48), dtype=np.uint8)
-    for i in range(16):
+    for i in range(16):     # 1 left shipt
         if i+1 in (1,2,9,16):
             c = np.roll(c, -1)
             d = np.roll(d, -1)
-        else:
+        else:               # 2 Left shifts
             c = np.roll(c, -2)
             d = np.roll(d, -2)
         keys[i] = pc_2(np.concatenate((c,d)))
