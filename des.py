@@ -172,7 +172,7 @@ def p(x) -> np.array:
     a = np.array([16, 7, 20, 21, 29, 12, 28, 17, 1, 15, 23, 26, 5, 18, 31, \
                 10, 2, 8, 24, 14, 32, 27, 3, 9, 19, 13,30, 6, 22, 11, 4, 25], dtype=np.uint8)
     y = np.zeros((32), dtype=np.uint8)
-    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    a = a - 1   # subtract 1 from each element so index starts at 0
     y = x[a]
     return y
 
@@ -200,7 +200,7 @@ def pc_2(ki) -> np.array:
                     51, 45, 33, 48, 44, 49, 39, 56,\
                     34, 53, 46, 42, 50, 36, 29, 32), dtype=np.uint8)
     y = np.zeros((48), dtype=np.uint8)
-    a = a - 1   # subtrakt 1 from each element so index starts at 0
+    a = a - 1   # subtract 1 from each element so index starts at 0
     y = ki[a]    # do the permutation
     return y
 
@@ -222,7 +222,7 @@ def f(r, k) -> np.array:
     return p(r)
 
 def gen_round_keys(k) -> np.array:
-    """takes a 64 bit key, returns 16 46-bit round keys"""
+    """takes a 64 bit key, returns 16 48-bit round keys"""
     k = np.reshape(k, (64,))
     #print("key before pc-1\n", k)
     k = pc_1(k)
